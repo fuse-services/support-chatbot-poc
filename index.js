@@ -16,5 +16,6 @@ app.listen(PORT, function () {
 });
 
 app.post("/openai/chatbot", supportChatbotRouter.generateSupportChatbotResponse);
+app.post('/submit-issue',supportChatbotRouter.submitIssue);
 
 app.get('/test', (req, res) => { res.send("ok")});

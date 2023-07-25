@@ -113,6 +113,7 @@
 
 
     <div id="QASection">
+        <form id="issue-detail">
         <div class="question">What is the issue/problem?</div>
         <div class="answer">
             <input type="text" placeholder="Enter your answer here" id="answer-txt1">
@@ -136,7 +137,8 @@
             <input type="file" id="file-input">
             <span class="drop-message" id ="file-name">Drag and Drop or click to upload the file/image.</span>
         </div>
-        
+        <button id="submit-issue" type="submit">Submit Issue</button>
+    </form>
     </div>
 
     <div id="chatbox">
@@ -383,6 +385,40 @@
 
         }
 
+        const submitIssue = document.getElementById('issue-detail');
+        submitIssue.addEventListener('submit', submitIssueForm);
+
+        function submitIssueForm(ev) {
+            ev.preventDefault();
+            // alert()
+            const formData = new FormData();
+            const xsnFile = document.getElementById('file-input').files[0];
+            if(xsnFile) {
+                formData.append('xsnFile', xsnFile);
+            }
+            formData.append('issueDetail', document.getElementById('answer-txt1').value);
+            formData.append('reproSteps', document.getElementById('answer-txt2').value);
+            formData.append('actualResult', document.getElementById('answer-txt3').value);
+            formData.append('expectedResult', document.getElementById('answer-txt4').value);
+            const options = {
+                method: 'POST',
+                body: formData
+            }            
+            try {
+                fetch(`${url}/submit-issue`, options)
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error occured while submitting the issue. Please try again later.');
+                });
+            } catch(ex) {
+                console.log(ex);
+                alert('Error occured while submitting the issue. Please try again later.');
+            }
+
+        }
 
     </script>
 </body>
