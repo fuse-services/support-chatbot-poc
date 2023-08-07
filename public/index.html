@@ -9,39 +9,47 @@
 
 <body>
 
-    <div id="QASection">
-        <form id="issue-detail">
-            <div class="question">What is the issue/problem?</div>
-            <div class="answer">
-                <input type="text" placeholder="Enter your answer here" id="answer-txt1">
-            </div>
+    <div>
+        <div id="QASection">
+            <form id="issue-detail">
+                <div class="question">1. What is the issue/problem?</div>
+                <div class="answer">
+                    <input type="text" placeholder="Enter your answer here" id="answer-txt1">
+                </div>
 
-            <div class="question">What are the steps that you encountered the issue?</div>
-            <div class="answer">
-                <input type="text" placeholder="Enter your answer here" id="answer-txt2">
-            </div>
+                <div class="question">2. What are the steps that you encountered the issue?</div>
+                <div class="answer">
+                    <input type="text" placeholder="Enter your answer here" id="answer-txt2">
+                </div>
 
-            <div class="question">What is the actual result that you got?</div>
-            <div class="answer">
-                <input type="text" placeholder="Enter your answer here" id="answer-txt3">
-            </div>
+                <div class="question">3. What is the actual result that you got?</div>
+                <div class="answer">
+                    <input type="text" placeholder="Enter your answer here" id="answer-txt3">
+                </div>
 
-            <div class="question">What is your expected result?</div>
-            <div class="answer">
-                <input type="text" placeholder="Enter your answer here" id="answer-txt4">
-            </div>
-            <div class="question">Attach Screenshots</div>
-            <div id="drop-area">
-                <input type="file" id="screenshot-input" multiple>
-                <span class="drop-message" id="screenshot-name">Drag and Drop or click to upload the screenshot images.</span>
-            </div>
-            <div class="question">Attach xsn file</div>
-            <div id="drop-area-xsn">
-                <input type="file" id="xsn-file-input">
-                <span class="drop-message" id="xsn-file-name">Drag and Drop or click to upload the xsn file.</span>
-            </div>
-            <button id="submit-issue" type="submit">Submit Issue</button>
-        </form>
+                <div class="question">4. What is your expected result?</div>
+                <div class="answer">
+                    <input type="text" placeholder="Enter your answer here" id="answer-txt4">
+                </div>
+                <div class="question">5. Attach Screenshots</div>
+                <div id="drop-area">
+                    <input type="file" id="screenshot-input" multiple>
+                    <span class="drop-message" id="screenshot-name">Drag and Drop or click to upload the screenshot images.</span>
+                </div>
+                <div class="question">6. Attach xsn file</div>
+                <div id="drop-area-xsn">
+                    <input type="file" id="xsn-file-input">
+                    <span class="drop-message" id="xsn-file-name">Drag and Drop or click to upload the xsn file.</span>
+                </div>
+                <button id="submit-issue" type="submit">Search Solution</button>
+            </form>
+        </div>
+
+        <div id="SearchedSolution">
+            <div id="similar-issues"></div>
+            <input id="btn-generate-solution" type="button" value="Generate Solution">
+            <div id="generated-solution"></div>
+        </div>
     </div>
 
     <div id="chatbox">
@@ -60,97 +68,15 @@
         <div class="loader"></div>
     </div>
     
-    <script language="javascript" src="./scripts/request-openai.js" > </script>
+    <script language="javascript" src="./scripts/request-api.js" > </script>
     <script language="javascript" src="./scripts/render-message.js" > </script>
     <script language="javascript" src="./scripts/scripting.js" > </script>
     <script language="javascript" src="./scripts/handle-files.js" > </script>
     <script>
         
-        // Attach event listener to form submission
-        var messageForm = document.getElementById('message-form');
-        messageForm.addEventListener('submit', sendMessage);
-       
-
-        // Function to handle form submission
-        function sendMessage(event) {
-            event.preventDefault();
-            var messageInput = document.getElementById('message-input');
-            var message = messageInput.value.trim();
-
-            // Check if user has entered a message
-            if (message === '') {
-                return;
-            }
-
-            // Clear input field
-            messageInput.value = '';
-
-            // Display user's message in chat history
-            renderMessage('User', message);
-
-            userContentToken.push({
-                "role": "user",
-                "content": message
-            });
-
-            if (questionCounter < questions.length && questions[questionCounter].question == "submit_support") {
-                if(message.toLowerCase() == "yes") {
-                    showLoader(true);
-                    document.getElementById('submit-issue').click();
-                }
-            }
-            let contentToken = getQuestionContext(message);
-
-            makeOpenAICall(contentToken);
-        }
-
         makeOpenAICall([{ "role": "system", "content": `You are a Qdabra Support Assistant, ${questions[0].prompt}` }]);
+        // makeOpenAICall(questionContext);
 
-        const submitIssue = document.getElementById('issue-detail');
-        submitIssue.addEventListener('submit', submitIssueForm);
-
-        function submitIssueForm(ev) {
-            ev.preventDefault();
-            showLoader(true);
-            const formData = new FormData();
-            const files = document.getElementById('screenshot-input').files;
-                      
-            for (const file of files) {
-                formData.append('imageFiles', file);
-            }
-
-            const xsnFile = document.getElementById('xsn-file-input').files[0];
-            if (xsnFile) {
-                formData.append('xsnFile', xsnFile);
-            }
-
-            formData.append('issueDetail', document.getElementById('answer-txt1').value);
-            formData.append('reproSteps', document.getElementById('answer-txt2').value);
-            formData.append('actualResult', document.getElementById('answer-txt3').value);
-            formData.append('expectedResult', document.getElementById('answer-txt4').value);
-            const options = {
-                method: 'POST',
-                body: formData
-            }
-            try {
-                fetch(`${url}/submit-issue`, options)
-                    .then(response => {
-                        console.log(response);
-                        showLoader(false);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error occured while submitting the issue. Please try again later.');
-                        showLoader(false);
-                    });
-            } catch (ex) {
-                console.log(ex);
-                alert('Error occured while submitting the issue. Please try again later.');
-                showLoader(false);
-            }
-
-        }
-    
         function showLoader(show) {
             const loader = document.getElementById("loader-div");
             loader.style.display = show == true ? "block" : "none";

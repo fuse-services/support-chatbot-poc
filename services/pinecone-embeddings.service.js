@@ -4,12 +4,12 @@ const { v4: uuidv4 } = require('uuid');
 
 const pinecone = new PineconeClient();
 const pineconeIndexName = process.env.PINECONE_INDEX;
-const pinceconeNamespace = "pinecone-namespace";
+const pinceconeNamespace = "test-namespace";
 
 pinecone.init({
     apiKey: process.env.PINECONE_APIKEY,
-    environment: process.env.PINECONE_ENVIRONMENT || 'asia-southeast1-gcp-free',
-    projectName: 'support-chatbot-demo'
+    environment: process.env.PINECONE_ENVIRONMENT || 'us-west4-gcp-free',
+    projectName: 'survey-gpt'
 });
 
 async function getEmbeddings(data) {
@@ -105,7 +105,33 @@ const storeEmbeddings = async (embeddingData) => {
     }
 }   
 
+const searchPineconeEmbeddings = async (data, threshold) => {
+    console.log('searching pinecone');
+    const {type,text} = data;
+    const embeddings = await getEmbeddings(text);
+    // console.log(embeddings)
+    // return ;
+    const index = pinecone.Index(pineconeIndexName);
+    const queryRequest = {
+        vector: embeddings,
+        filter: {
+            type
+        },
+        topK: 5,
+        includeValues: true,
+        includeMetadata: true,
+        namespace: pinceconeNamespace,
+    };
+    const queryResponse = await index.query({ queryRequest });
+    console.dir(queryResponse);
+    const similarQAs = queryResponse.matches
+        .map((el) => ({id: el.id, score: el.score, text: el.metadata.text, type, company: el.metadata.company, ticketNo: el.metadata.ticket_no, resolution: el.resolution }))
+        .filter(el => el.score >= threshold ) ;
+    
+    return similarQAs;
+}
+
 
 module.exports = {
-    storeEmbeddings, createPineconeIndex, removePineconeIndex, updateEmbeddingById
+    storeEmbeddings, createPineconeIndex, removePineconeIndex, updateEmbeddingById, searchPineconeEmbeddings
 };

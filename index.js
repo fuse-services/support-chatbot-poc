@@ -19,10 +19,11 @@ app.listen(PORT, function() {
 });
 
 app.post("/openai/chatbot", supportChatbotRouter.generateSupportChatbotResponse);
-app.post('/submit-issue', upload.fields([{ name: 'imageFiles', maxCount: 5 }, { name: 'xsnFile', maxCount: 1 }]), supportChatbotRouter.submitIssue);
+app.post("/openai/generate-solution", supportChatbotRouter.generateSupportSolution);
+app.post('/submit-issue', upload.fields([{ name: 'imageFiles', maxCount: 5 }, { name: 'xsnFile', maxCount: 1 }]), supportChatbotRouter.searchSupportResolution);
 app.get('/test', (req, res) => { res.send("ok") });
 
-app.get("/embeddings/pinecone", pineconeEmbeddingRouter.embeddingsOperations);
-app.post('/embeddings/pinecone', pineconeEmbeddingRouter.addSupportEmbedding);
-app.put('/embeddings/pinecone/:id', pineconeEmbeddingRouter.updateSupportEmbedding);
-app.delete('/embeddings/pinecone/:id', pineconeEmbeddingRouter.deleteSupportEmbeddingById);
+// app.get("/embeddings/pinecone", pineconeEmbeddingRouter.embeddingsOperations);
+// app.post('/embeddings/pinecone', pineconeEmbeddingRouter.addSupportEmbedding);
+// app.put('/embeddings/pinecone/:id', pineconeEmbeddingRouter.updateSupportEmbedding);
+// app.delete('/embeddings/pinecone/:id', pineconeEmbeddingRouter.deleteSupportEmbeddingById);

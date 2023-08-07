@@ -11,15 +11,49 @@
     width: 600px;
 }
 
-#QASection {
+#QASection, #SearchedSolution {
     margin-left: 50px;
     margin-top: 50px;
     align-items: center;
 }
 
+#SearchedSolution {
+    display: none;
+}
+
 body {
     font-family: Arial, sans-serif;
     display: flex;
+}
+
+.qa {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.qa_score {
+    margin: 0px 10px 10px 10px;
+    background-color: #026a2a;
+    border-radius: 20px;
+    padding: 10px 15px 10px 15px;
+    font-size: 20px;
+    color: #e5dada;
+    width: 35px;
+    align-items: center;
+}
+
+.qa_pair {
+    display: flex;
+    flex-direction: column;
+    margin: 0 20px;
+    width: 90%;
+}
+
+.qa_question,
+.qa_answer {
+    display: block;
+    margin: 1px;
 }
 
 #message-input {
@@ -44,10 +78,12 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 #chatlog div {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     display: flex;
     align-items: center;
 }
@@ -56,6 +92,13 @@ body {
     margin-right: 12px;
     text-align: right;
 }
+
+.sender-icon {
+    width: 50px;
+    height: 50px;
+    padding: 2px;
+}
+
 
 #chatbot-icon {
     margin-left: 12px;

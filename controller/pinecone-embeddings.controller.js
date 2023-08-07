@@ -1,5 +1,5 @@
 const xmlbuilder = require('xmlbuilder');
-const { storeEmbeddings, createPineconeIndex, removePineconeIndex, updateEmbeddingById } = require('../services/pinecone-embeddings.service');
+const { storeEmbeddings, createPineconeIndex, removePineconeIndex, updateEmbeddingById, searchPineconeEmbeddings } = require('../services/pinecone-embeddings.service');
 
 
 const embeddingsOperations =  async(req, res, next) =>{
@@ -90,6 +90,26 @@ const deleteSupportEmbeddingById = async(req, res) => {
         namespace: pinceconeNamespace,
     });
     return response;
+}
+
+const searchEmbeddings = async(req, res) => {
+    const { threshold, searchFields } = req.body;
+    const promise = searchFields.map(async itm => await searchPineconeEmbeddings(itm, threshold));
+
+    Promise.all(promise)
+        .then(resp => {
+            const similarIssues = resp[0].map(itm => ({id: itm.id, score: itm.score, issue: itm.text, company: itm.company, ticketNo: itm.ticketNo }));
+            const similarSteps = resp[1].map(itm => ({id: itm.id, score: itm.score, step: itm.text, company: itm.company, ticketNo: itm.ticketNo}));
+            const similarExpectedResult = resp[2].map(itm => ({id: itm.id, score: itm.score, result: itm.text, company: itm.company, ticketNo: itm.ticketNo}));
+            const similarActualResult = resp[3].map(itm => ({id: itm.id, score: itm.score, result: itm.text, company: itm.company, ticketNo: itm.ticketNo}));
+            res.status(200).send({
+                similarIssues, similarSteps, similarExpectedResult, similarActualResult
+            });
+        })
+        .catch(err => {
+            console.log("err",err);
+            res.status(500).send('internal server error');
+        });
 }
 
 module.exports = {
