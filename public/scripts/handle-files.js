@@ -20,10 +20,13 @@ document.getElementById("screenshot-input").addEventListener("change", function 
 
     if(Array.from(selectedFiles).length > 0) {
         const filetext = document.getElementById('screenshot-name');
+        filetext.textContent = "";
         const filetextSpan = document.getElementById('screenshot-name-span');
     
-        filetext.textContent = "";
-        filetextSpan.textContent = "";
+        if (filetextSpan) {
+            filetextSpan.textContent = "";
+        }
+        
     }
 
     Array.from(selectedFiles).forEach((file, index) => {
@@ -59,8 +62,8 @@ function handleImageFile(file, i) {
             const thumbnailImg = document.createElement('img');
             thumbnailImg.src = reader.result;
             thumbnailImg.alt = file.name;
-            thumbnailImg.style.width = "150px";
-            thumbnailImg.style.height = "150px";
+            thumbnailImg.style.width = "140px";
+            thumbnailImg.style.height = "140px";
             thumbnailContainer.appendChild(thumbnailImg);
         };
     

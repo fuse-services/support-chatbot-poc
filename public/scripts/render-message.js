@@ -8,17 +8,20 @@ function renderMessage(sender, message) {
     const imgTag = `<img src="./static/${sender == "User" ? "user" : "chatbot"}-icon.png" style="height:50px;width:50px"></img>`
     messageElement.innerHTML = ``;
     
+    let fontStyle = "border: 2px solid #ccc;background-color: #f0f0f0;display:flex;padding: 5px 10px;";
+    
     if (sender == "User") {
         messageElement.style = "display:flex;align-self:flex-end";
-        fontStyle = "padding:0 5px;font-style:normal;";
+        fontStyle += "text-align: right;font-style:normal;border-radius: 10px 10px 0 10px;";
         messageElement.innerHTML += `<div style="${fontStyle}">${message}</div><div style="text-align: left;" class="sender-icon">${imgTag}</div>`;
     } else {
         messageElement.style = "display:flex;align-self:flex-start";
-        fontStyle = "padding:0 5px;font-style:italic;";
+        fontStyle += "text-align: left;font-style:italic;border-radius: 10px 10px 10px 0;";
         messageElement.innerHTML += `<div style="text-align: left;" class="sender-icon">${imgTag}</div><div style="${fontStyle}">${message}</div>`;
     }
 
     chatlog.appendChild(messageElement);
+    chatlog.scrollTop = chatlog.scrollHeight;
 }
 
 // Function to render chatbot typing indicator

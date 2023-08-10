@@ -26,49 +26,48 @@ const userIntention = [""];
 //     {"role": "user", "content": ""}
 //   ]
 
-// const questionContext =[{
-//     "role": "system", "content": `You are a Qdabra Support Assistant, that assists the user in filling out the support ticket form.
-//     Your task is to ask the below questions to the user one by one in less than 30 words, the user will answer the question and provide the response as in json object as below.
-//     Here is the question format:
-//     [{
-//         "question": "What is the issue/problem?",
-//         "question_type": "issue"
-//     }, {
-//         "question": "What are the steps that you encountered the issue?",
-//         "question_type": "description"
-//     }, {
-//         "question": "What is the actual result that you got?",
-//         "question_type": "actual_result"
-//     }, {
-//         "question": "What is your expected result?",
-//         "question_type": "expected_result"
-//     }, {
-//         "question": "Would you like to attach screenshot?",
-//         "question_type": "attach_screenshot"
-//     }, {
-//         "question": "Would you like to attach xsn file?",
-//         "question_type": "attach_xsnfile"
-//     },{
-//         "question": "Would you like to submit the support ticket?",
-//         "question_type": "submit_support"
-//     },{
-//         "question_detail": "Would you like to submit the support ticket?",
-//         "question": "submit_support"
-//     }]
+const questionContext =[{
+    "role": "system", "content": `You are a Qdabra Support Assistant, that assists the user in filling out the support ticket form.
+    Your task is to ask the below questions to the user one by one in less than 30 words, the user will answer the question and provide the response as in json object as below.
+    Here is the question format:
+    [{
+        "question": "What is the issue/problem?",
+        "question_type": "issue"
+    }, {
+        "question": "What are the steps that you encountered the issue?",
+        "question_type": "description"
+    }, {
+        "question": "What is the actual result that you got?",
+        "question_type": "actual_result"
+    }, {
+        "question": "What is your expected result?",
+        "question_type": "expected_result"
+    }, {
+        "question": "Would you like to attach screenshot?",
+        "question_type": "attach_screenshot"
+    }, {
+        "question": "Would you like to attach xsn file?",
+        "question_type": "attach_xsnfile"
+    },{
+        "question": "Would you like to submit the support ticket?",
+        "question_type": "submit_support"
+    },{
+        "question_detail": "Would you like to submit the support ticket?",
+        "question": "submit_support"
+    }]
 
-//     Here is the response format:
-//     {
-//         question_type: "",
-//         question: ""
-//     }
-//     The question_type is of type string, that is the question you have asked, the question that should be asked to the user.
-//     Please keep in mind your response should be a single json object with above mentioned json format.
+    Here is the response format:
+    {
+        question_type: "",
+        question: ""
+    }
+    The question_type is of type string, that is the question you have asked, the question that should be asked to the user.
+    Please keep in mind your response should be a single json object with above mentioned json format.
 
-//     Once you have asked for issue, description/steps, actual result and expected result, you have to confirm with the user if they want to rectify the provided answer.
-//     After all the questions are asked, you have to check the flow and answer any queries by the user.
-//     Process flow: ${processFlow}
-//     `
-// }]
+    Once you have asked for issue, description/steps, actual result and expected result, you have to confirm with the user if they want to rectify the provided answer.
+    After all the questions are asked, you have to check the flow and answer any queries by the user.
+    `
+}]
 
 let questions = [{
         "question_id": 0,
@@ -133,7 +132,8 @@ function getQuestionContext(message) {
         // questions[questionCounter].answer = message;
         const answerTxtbox = document.getElementById(`answer-txt${questionCounter + 1}`);
         if (answerTxtbox) {
-            answerTxtbox.value = message;
+            //answerTxtbox.value = message;
+            setTextboxValue(message, questionCounter + 1);
         }
 
         if (questions[questionCounter].question == "confirm_answer" && message.toUpperCase() == "NO") {
@@ -146,11 +146,18 @@ function getQuestionContext(message) {
             
                 // setting the id of modified question
                 modifiedAnswer = message;
+
+                //highlight the question to red
+                const questionDiv = document.getElementById(`question-div${message.trim()}`);
+                if (questionDiv) {
+                    questionDiv.style.color = "red";
+                }
+                
                 // modify the answer of the question based on the option.
                 const answerTxtbox = document.getElementById(`answer-txt${message.trim()}`);
                 if (answerTxtbox) {
                     // answerTxtbox.value = messageSplit[1].trim();
-                    answerTxtbox.style.borderColor = "red";
+                    answerTxtbox.style.border = "3px solid red";
                     document.getElementById("message-input").value = answerTxtbox.value;
                 }
                 
@@ -173,8 +180,9 @@ function getQuestionContext(message) {
             // modify the answer of the question based on the option.
             const answerTxtbox = document.getElementById(`answer-txt${modifiedAnswer}`);
             if (answerTxtbox) {
-                answerTxtbox.value = message;
-                answerTxtbox.style.borderColor = "black";
+                //answerTxtbox.value = message;
+                setTextboxValue(message, modifiedAnswer);
+                answerTxtbox.style.border = "1px solid black";
             }
             
             // confirm again with user if they want to rectify another answer.
@@ -216,4 +224,53 @@ function getQuestionContext(message) {
         // questionCounter = 0;
     }
     return contentToken;
+}
+
+let animationInterval;
+let textbox;
+
+async function setTextboxValue(message, answerPointer) {
+    const textbox = document.getElementById(`answer-txt${answerPointer}`);
+    currentIndex = 0;
+    textbox.value = '';
+    textbox.style.borderColor = "#00008B";
+    while (currentIndex < message.length) {
+        textbox.value += message[currentIndex];
+        await sleep(20);
+        currentIndex++;
+    }
+
+    textbox.style.border = "1px solid black";
+
+    const questionDiv = document.getElementById(`question-div${answerPointer}`);
+    if (questionDiv) {
+        questionDiv.style.color = "black";
+    }
+
+    return;
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+function highLightTextbox(event) {
+    const answerTxtbox = document.getElementById(`answer-txt${questionCounter + 1}`);
+    
+    if (answerTxtbox) {
+        answerTxtbox.style.border = "3px solid #0000FF";        
+    }
+
+    //removing highlight in previously answered question
+    const preQuestionDiv = document.getElementById(`question-div${questionCounter}`);
+    if (preQuestionDiv) {
+        preQuestionDiv.style.color = "black";
+    }
+    
+    //highlighting answering question
+    const questionDiv = document.getElementById(`question-div${questionCounter + 1}`);
+    if (questionDiv) {
+        questionDiv.style.color = "#0000FF";
+    }
+    
 }

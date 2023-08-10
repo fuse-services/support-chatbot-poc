@@ -8,60 +8,89 @@
 </head>
 
 <body>
-
-    <div>
-        <div id="QASection">
-            <form id="issue-detail">
-                <div class="question">1. What is the issue/problem?</div>
-                <div class="answer">
-                    <input type="text" placeholder="Enter your answer here" id="answer-txt1">
-                </div>
-
-                <div class="question">2. What are the steps that you encountered the issue?</div>
-                <div class="answer">
-                    <input type="text" placeholder="Enter your answer here" id="answer-txt2">
-                </div>
-
-                <div class="question">3. What is the actual result that you got?</div>
-                <div class="answer">
-                    <input type="text" placeholder="Enter your answer here" id="answer-txt3">
-                </div>
-
-                <div class="question">4. What is your expected result?</div>
-                <div class="answer">
-                    <input type="text" placeholder="Enter your answer here" id="answer-txt4">
-                </div>
-                <div class="question">5. Attach Screenshots</div>
-                <div id="drop-area">
-                    <input type="file" id="screenshot-input" multiple>
-                    <span class="drop-message" id="screenshot-name">Drag and Drop or click to upload the screenshot images.</span>
-                </div>
-                <div class="question">6. Attach xsn file</div>
-                <div id="drop-area-xsn">
-                    <input type="file" id="xsn-file-input">
-                    <span class="drop-message" id="xsn-file-name">Drag and Drop or click to upload the xsn file.</span>
-                </div>
-                <button id="submit-issue" type="submit">Search Solution</button>
-            </form>
-        </div>
-
-        <div id="SearchedSolution">
-            <div id="similar-issues"></div>
-            <input id="btn-generate-solution" type="button" value="Generate Solution">
-            <div id="generated-solution"></div>
-        </div>
-    </div>
-
-    <div id="chatbox">
-        <div id="chatlog"></div>
-        <form id="message-form">
-            <div style="display: flex; align-items: center; padding: 5px;">
-                <div id="user-icon"><strong>User:</strong></div>
-                <input type="text" id="message-input" placeholder="Type your message..." required />
-                <button type="submit" style="align-items: center; padding: 10px;">Send</button>
-                <div id="chatbot-icon"></div>
+    <div class="supportticket-container">
+        <div class="question-container">
+            <div class="title-bar">
+                <img class="logo" src="./static/qdabra-icon.webp" />
+                <label class="title"><h1>Support Ticket</h1></label>
             </div>
-        </form>
+            <div class="issue-divider"><h2>Customer Contact</h2></div>
+            <div class="customer-detail">
+                <div class="customer-question">
+                    <label class="question">Company Name  <span style="color:red;font-weight: bolder;">*</span></label>
+                    <input type="text" placeholder="" id="company-name">
+                </div>
+
+                <div class="customer-question">
+                    <label class="question">Full Name  <span style="color:red;font-weight: bolder;">*</span></label>
+                    <input type="text" placeholder="" id="full-name"></textarea>
+                </div>
+
+                <div class="customer-question">
+                    <label class="question">Email  <span style="color:red;font-weight: bolder;">*</span></label>
+                    <input type="text" placeholder="" id="email">
+                </div>
+            </div>
+            <div class="QASection">
+                <div class="issue-divider"><h2>Issue Detail</h2></div>
+                <form id="issue-detail" class="issue-detail">
+                    <div id="question-div1" class="question">1. What is the issue/problem?  <span style="color:red;font-weight: bolder;">*</span></div> 
+                    <div class="answer">
+                        <input type="text" placeholder="" id="answer-txt1">
+                    </div>
+
+                    <div id="question-div2" class="question">2. What are the steps that you encountered the issue?  <span style="color:red;font-weight: bolder;">*</span></div>
+                    <div class="answer">
+                        <textarea placeholder="" id="answer-txt2"></textarea>
+                    </div>
+
+                    <div id="question-div3" class="question">3. What is the actual result that you got?  <span style="color:red;font-weight: bolder;">*</span></div>
+                    <div class="answer">
+                        <input type="text" placeholder="" id="answer-txt3">
+                    </div>
+
+                    <div id="question-div4" class="question">4. What is your expected result?  <span style="color:red;font-weight: bolder;">*</span></div>
+                    <div class="answer">
+                        <input type="text" placeholder="" id="answer-txt4">
+                    </div>
+                    <div class="question">5. Attach Screenshots</div>
+                    <div id="drop-area">
+                        <input type="file" id="screenshot-input" multiple>
+                        <span class="drop-message" id="screenshot-name">Drag and Drop or click to upload the screenshot images.</span>
+                    </div>
+                    <div class="question">6. Attach xsn file</div>
+                    <div id="drop-area-xsn">
+                        <input type="file" id="xsn-file-input">
+                        <span class="drop-message" id="xsn-file-name">Drag and Drop or click to upload the xsn file.</span>
+                    </div>
+                    <div class="submit-container">
+                        <button id="submit-issue" type="submit">Search Solution</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="SearchedSolution">
+                <div class="similar-issues"></div>
+                <input id="btn-generate-solution" type="button" value="Generate Solution">
+                <div id="generated-solution"></div>
+            </div>
+        </div>
+
+        <div id="chatbot-assistant">
+            <div id="chatbox">
+                <div id="chatlog"></div>
+                <form id="message-form">
+                    <div style="display: flex; align-items: center; padding: 5px;">
+                        <div id="user-icon"><strong>User:</strong></div>
+                        <input type="text" id="message-input" placeholder="Type your message..." required />
+                        <button type="submit" style="align-items: center; padding: 10px;">Send</button>
+                    </div>
+                </form>
+            </div>
+            <div id="chatbot-icon">
+                <img src="./static/chatbot-icon.png" style="height:75px;width:75px"></img>
+            </div>
+        </div>
     </div>
 
     <div class="loader-overlay" id="loader-div" style="display: none;">
@@ -73,7 +102,31 @@
     <script language="javascript" src="./scripts/scripting.js" > </script>
     <script language="javascript" src="./scripts/handle-files.js" > </script>
     <script>
+
+        const chatbot = document.getElementById("chatbot-icon");
+        const chatbotDiv = document.getElementById("chatbox");
+        chatbot.addEventListener('click', toggleChatbot);
+        chatbotDiv.style.display == "block" ? document.body.style.alignItems = "": document.body.style.alignItems = "center";
+
         
+        const messageInput = document.getElementById("message-input");
+        messageInput.addEventListener('keydown', highLightTextbox);
+        messageInput.addEventListener('focus', highLightTextbox);
+
+        function toggleChatbot() {
+            const supportTicketContainer = document.querySelector(".supportticket-container");
+            if (chatbotDiv.style.display == "block") {
+                chatbotDiv.style.display = "none";
+                document.body.style.alignItems = "center";
+                supportTicketContainer.style.margin = "2%";
+            } else {
+                chatbotDiv.style.display = "block";
+                document.body.style.alignItems ="";
+                supportTicketContainer.style.margin = "2% 5%";
+
+            }
+        }
+
         makeOpenAICall([{ "role": "system", "content": `You are a Qdabra Support Assistant, ${questions[0].prompt}` }]);
         // makeOpenAICall(questionContext);
 
