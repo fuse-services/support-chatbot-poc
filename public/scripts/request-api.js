@@ -69,10 +69,13 @@ function makeOpenAICall(contentToken) {
      });
 
      if (questionCounter < questions.length && questions[questionCounter].question == "submit_support") {
-         if(message.toLowerCase() == "yes") {
-             showLoader(true);
-             document.getElementById('submit-issue').click();
-         }
+        if(message.toLowerCase() == "yes") {
+            showLoader(true);
+            document.getElementById('submit-issue').click();
+            questionCounter++;
+            // submitIssueForm();
+            return;
+        }
      }
     let contentToken = getQuestionContext(message);
     if (contentToken.length > 0) {
@@ -91,33 +94,21 @@ function makeOpenAICall(contentToken) {
 function submitIssueForm(e) {
     e.preventDefault();
     showLoader(true);
-    const formData = new FormData();
-    const files = document.getElementById('screenshot-input').files;
-              
-    for (const file of files) {
-        formData.append('imageFiles', file);
+    const body = loadFormData();
+
+    if (!body) {
+        showLoader(false);
+        return;
     }
 
-    const xsnFile = document.getElementById('xsn-file-input').files[0];
-    if (xsnFile) {
-        formData.append('xsnFile', xsnFile);
-    }
-
-    formData.append('issueDetail', document.getElementById('answer-txt1').value);
-    formData.append('reproSteps', document.getElementById('answer-txt2').value);
-    formData.append('actualResult', document.getElementById('answer-txt3').value);
-    formData.append('expectedResult', document.getElementById('answer-txt4').value);
-    formData.append('threshold', "0.8");
-    const options = {
-        method: 'POST',
-        body: formData
-    }
     try {
-        fetch(`${url}/submit-issue`, options)
+        fetch(`${url}/submit-issue`, { method: 'POST', body: body })
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                renderSearchedSolution(data);
+                renderSolutionMessage(data.response, data.solutions);
+                // renderSearchedSolution(data);
+                showLoader(false);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -132,16 +123,60 @@ function submitIssueForm(e) {
 
 }
 
+function loadFormData() {
+    try {
+        const formData = new FormData();
+
+        formData.append('companyName',  validateElementValue('txt-company-name'));
+        formData.append('name', validateElementValue('txt-name'));
+        formData.append('email', validateElementValue('txt-email'));
+        formData.append('issueDetail', validateElementValue('answer-txt0'));
+        formData.append('reproSteps', validateElementValue('answer-txt1'));
+        formData.append('actualResult', validateElementValue('answer-txt2'));
+        formData.append('expectedResult', validateElementValue('answer-txt3'));
+        formData.append('threshold', "0.9");
+
+        const files = document.getElementById('screenshot-input').files;
+        for (const file of files) {
+            formData.append('imageFiles', file);
+        }
+
+        const xsnFile = document.getElementById('xsn-file-input').files[0];
+        if (xsnFile) {
+            formData.append('xsnFile', xsnFile);
+        }
+
+        return formData;
+    } catch (err) {
+        console.log(err);
+        return null;
+    }
+}
+
+function validateElementValue(elementId) {
+    const element = document.getElementById(elementId);
+    
+    if (element.value == "") {
+        element.style.border = "3px solid red";
+        element.focus();
+        throw Error("required field violation!")
+    } else {
+        element.style.border = "1px solid black";
+        return element.value;
+    }
+}
+
+
 function generateSolution(e) {
     e.preventDefault();
-    showLoader(true);
-    const generatedSolution = document.getElementById('generated-solution');
+    // showLoader(true);
+    const generatedSolution = document.querySelector('.generated-solution');
     generatedSolution.innerHTML = "";
 
-    const issueDetail = document.getElementById('answer-txt1').value;
-    const reproSteps = document.getElementById('answer-txt2').value;
-    const actualResult = document.getElementById('answer-txt3').value;
-    const expectedResult = document.getElementById('answer-txt4').value;
+    const issueDetail = document.getElementById('answer-txt0').value;
+    const reproSteps = document.getElementById('answer-txt1').value;
+    const actualResult = document.getElementById('answer-txt2').value;
+    const expectedResult = document.getElementById('answer-txt3').value;
    
     const promises = [
         makeSupportSolutionAPICall(issueDetail, reproSteps, actualResult, expectedResult, "gpt-4"),

@@ -125,8 +125,8 @@ const searchPineconeEmbeddings = async (data, threshold) => {
     const queryResponse = await index.query({ queryRequest });
     console.dir(queryResponse);
     const similarQAs = queryResponse.matches
-        .map((el) => ({id: el.id, score: el.score, text: el.metadata.text, type, company: el.metadata.company, ticketNo: el.metadata.ticket_no, resolution: el.resolution }))
-        .filter(el => el.score >= threshold ) ;
+        .filter(el => el.score >= threshold )
+        .map((el) => ({id: el.id, score: el.score, text: el.metadata.text, type: el.metadata.type, company: el.metadata.company, ticketNo: el.metadata.ticket_no, resolution: el.metadata.resolution }));
     
     return similarQAs;
 }

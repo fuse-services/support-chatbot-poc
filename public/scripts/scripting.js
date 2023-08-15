@@ -1,5 +1,8 @@
 const url = window.location.protocol + '//' + window.location.host;
 let modifiedAnswer = 0;
+let isRectified = false;
+let attachmentRectifiedCounter = 0;
+
 const processFlow = `1. The issues/problems/features are gathered from user.
     2. The questions are used to gather information from user such as steps, actual result, expected result and so on.
     3. This information are send to chatgpt and also stored in our database.
@@ -87,10 +90,18 @@ let questions = [{
         "prompt": "You are a Qdabra Support Assistant. Your task is to ask for the expected result by the customer in less than 40 words."
     }, {
         "question_id": 4,
+        "question": "attach_screenshot",
+        "prompt": "You are a Qdabra Support Assistant. Your task is to ask if the customer would like to attach screenshot, image in less than 30 words."
+    }, {
+        "question_id": 5,
+        "question": "attach_xsnfile",
+        "prompt": "You are a Qdabra Support Assistant. Your task is to ask if the customer would like to the infopath xsn file in less than 30 words."
+    }, {
+        "question_id": 6,
         "question": "confirm_answer",
         "prompt": `You are a Qdabra Support Assistant. Your task is to ask the user to verify if the user wants to rectify the above answers. If they want to rectify then ask the user to type "'Yes' to modify the answer" otherwise "'No' to skip" to continue as response in less than 30 word.`
     }, {
-        "question_id": 5,
+        "question_id": 7,
         "question": "answer_option",
         "prompt": `You are a Qdabra Support Assistant. Your task is to ask for which answer the user would like to modify the answer and show the option below as it is and ask the user to provide the response in same format in less than 40 words.
                 Option:
@@ -98,25 +109,19 @@ let questions = [{
                 1 => "What is the issue/problem?" <br/>
                 2 => "What are the steps that you encountered the issue?" <br/>
                 3 => "What is the actual result that you got?" <br/>
-                4 => "What is your expected result?" <br/> '
+                4 => "What is your expected result?" <br/>
+                5 => "Attach Screenshots" <br/>
+                6 => "Attach XSN file" <br/> '
                 Please display the option as it is and do not change or remove any tag or text from the option but exclude the '' from the option.`
     }, {
-        "question_id": 6,
+        "question_id": 8,
         "question": "rectify_answer",
         "prompt": "You are a Qdabra Support Assistant. Your task is to ask if the customer would like to attach screenshot, image in less than 30 words."
     }, {
-        "question_id": 7,
-        "question": "attach_screenshot",
-        "prompt": "You are a Qdabra Support Assistant. Your task is to ask if the customer would like to attach screenshot, image in less than 30 words."
-    }, {
-        "question_id": 8,
-        "question": "attach_xsnfile",
-        "prompt": "You are a Qdabra Support Assistant. Your task is to ask if the customer would like to the infopath xsn file in less than 30 words."
-    },{
         "question_id": 9,
         "question": "submit_support",
         "prompt": `You are a Qdabra Support Assistant. You have asked for user's issue, repro steps, actual result and expected result, and also have attached screenshots and xsn file.
-            Your task is to ask if the customer to verify if the provided information/images/files are ok and if ok then type "yes" to submit the support in less than 40 words.`
+            Your task is to ask if the customer to type "yes" to submit the support otherwise they can click the "Search Solution" button to submit the form as well in less than 40 words.`
     },
 ];
 
@@ -130,13 +135,17 @@ function getQuestionContext(message) {
 
     if (questionCounter < questions.length) {
         // questions[questionCounter].answer = message;
-        const answerTxtbox = document.getElementById(`answer-txt${questionCounter + 1}`);
+        const answerTxtbox = document.getElementById(`answer-txt${questionCounter}`);
         if (answerTxtbox) {
             //answerTxtbox.value = message;
-            setTextboxValue(message, questionCounter + 1);
+            setTextboxValue(message, questionCounter);
         }
 
-        if (questions[questionCounter].question == "confirm_answer" && message.toUpperCase() == "NO") {
+        if (isRectified == true && (questions[questionCounter].question == "attach_xsnfile" || questions[questionCounter].question == "attach_screenshot")) {
+            questionCounter = questions.filter(q => q.question == "attach_xsnfile")[0].question_id;  
+            isRectified = false;
+
+        } else if (questions[questionCounter].question == "confirm_answer" && message.toUpperCase() == "NO") {
             // skip the rectify answer part and continue with attach image
             // since we are incrementing the value of counter, thus setting the question counter to rectify answer.
             questionCounter = questions.filter(q => q.question == "rectify_answer")[0].question_id;
@@ -148,27 +157,39 @@ function getQuestionContext(message) {
                 modifiedAnswer = message;
 
                 //highlight the question to red
-                const questionDiv = document.getElementById(`question-div${message.trim()}`);
+                const questionDiv = document.getElementById(`question-div${message.trim()-1}`);
                 if (questionDiv) {
                     questionDiv.style.color = "red";
                 }
                 
                 // modify the answer of the question based on the option.
-                const answerTxtbox = document.getElementById(`answer-txt${message.trim()}`);
+                const answerTxtbox = document.getElementById(`answer-txt${message.trim()-1}`);
                 if (answerTxtbox) {
                     // answerTxtbox.value = messageSplit[1].trim();
                     answerTxtbox.style.border = "3px solid red";
                     document.getElementById("message-input").value = answerTxtbox.value;
                 }
                 
-                // confirm again with user if they want to rectify another answer.
-                // since we are incrementing the value of counter, thus setting the question to expected result.
-                questionCounter = questions.filter(q => q.question == "rectify_answer")[0].question_id;
-                return [];
+                 //if user selects attach_screenshot or xsn file to rectify, then display the question to attach files.
+                if (message.trim() == questions.filter(q => q.question == "attach_screenshot")[0].question_id + 1) {
+                    questionCounter = questions.filter(q => q.question == "attach_screenshot")[0].question_id - 1;   
+                    isRectified = true;       
+                    attachmentRectifiedCounter++;
+                } else if (message.trim() == questions.filter(q => q.question == "attach_xsnfile")[0].question_id + 1) {
+                    questionCounter = questions.filter(q => q.question == "attach_xsnfile")[0].question_id - 1;            
+                    isRectified = true;
+                    attachmentRectifiedCounter++;
+                } else {
+                    
+                    // confirm again with user if they want to rectify another answer.
+                    // since we are incrementing the value of counter, thus setting the question to expected result.
+                    questionCounter = questions.filter(q => q.question == "rectify_answer")[0].question_id;
+                    return [];
+                }
             } else {
                 contentToken.push({
                     "role": "system",
-                    "content": `You are a Qdabra Support Assistant. Your task is ask the user to select between the option 1,2,3 or 4.
+                    "content": `You are a Qdabra Support Assistant. Your task is ask the user to select between the option 1,2,3,4,5 or 6.
                         User Reply: ${message}`
                 });
 
@@ -178,16 +199,27 @@ function getQuestionContext(message) {
         } else if (questions[questionCounter].question == "rectify_answer") {
         
             // modify the answer of the question based on the option.
-            const answerTxtbox = document.getElementById(`answer-txt${modifiedAnswer}`);
+            const answerTxtbox = document.getElementById(`answer-txt${modifiedAnswer-1}`);
             if (answerTxtbox) {
                 //answerTxtbox.value = message;
-                setTextboxValue(message, modifiedAnswer);
+                setTextboxValue(message, modifiedAnswer-1);
                 answerTxtbox.style.border = "1px solid black";
+            }
+             
+            //if user selects attach_screenshot or xsn file to rectify, then display the question to attach files.
+            if (modifiedAnswer == questions.filter(q => q.question == "attach_screenshot")[0].question_id + 1) {
+                questionCounter = questions.filter(q => q.question == "attach_screenshot")[0].question_id - 1;   
+                isRectified = true; 
+                attachmentRectifiedCounter++;        
+            } else if (modifiedAnswer == questions.filter(q => q.question == "attach_xsnfile")[0].question_id + 1) {
+                questionCounter = questions.filter(q => q.question == "attach_xsnfile")[0].question_id - 1;            
+                isRectified = true;
+                attachmentRectifiedCounter++;
             }
             
             // confirm again with user if they want to rectify another answer.
             // since we are incrementing the value of counter, thus setting the question to expected result.
-            questionCounter = questions.filter(q => q.question == "expected_result")[0].question_id;            
+            questionCounter = questions.filter(q => q.question == "attach_xsnfile")[0].question_id;            
         } 
     }
 
@@ -255,10 +287,12 @@ function sleep(ms) {
   }
 
 function highLightTextbox(event) {
-    const answerTxtbox = document.getElementById(`answer-txt${questionCounter + 1}`);
+    const answerTxtbox = document.getElementById(`answer-txt${questionCounter}`);
     
     if (answerTxtbox) {
-        answerTxtbox.style.border = "3px solid #0000FF";        
+        if (answerTxtbox.style.border != "3px solid red") {
+            answerTxtbox.style.border = "3px solid #0000FF";        
+        }        
     }
 
     //removing highlight in previously answered question
@@ -268,9 +302,23 @@ function highLightTextbox(event) {
     }
     
     //highlighting answering question
-    const questionDiv = document.getElementById(`question-div${questionCounter + 1}`);
+    const questionDiv = document.getElementById(`question-div${questionCounter}`);
     if (questionDiv) {
         questionDiv.style.color = "#0000FF";
     }
     
+}
+
+document.getElementById("txt-company-name").addEventListener("focusout", removeHighlightInTextField);
+document.getElementById("txt-name").addEventListener("focusout", removeHighlightInTextField);
+document.getElementById("txt-email").addEventListener("focusout", removeHighlightInTextField);
+document.getElementById("answer-txt1").addEventListener("focusout", removeHighlightInTextField);
+document.getElementById("answer-txt2").addEventListener("focusout", removeHighlightInTextField);
+document.getElementById("answer-txt3").addEventListener("focusout", removeHighlightInTextField);
+document.getElementById("answer-txt0").addEventListener("focusout", removeHighlightInTextField);        
+
+function removeHighlightInTextField(event) {
+    if (event.srcElement.value != "") {
+        event.srcElement.style.border = "1px solid black";
+    }
 }

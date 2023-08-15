@@ -21,9 +21,9 @@ document.getElementById("screenshot-input").addEventListener("change", function 
     if(Array.from(selectedFiles).length > 0) {
         const filetext = document.getElementById('screenshot-name');
         filetext.textContent = "";
-        const filetextSpan = document.getElementById('screenshot-name-span');
-    
-        if (filetextSpan) {
+
+        const filetextSpans = document.querySelectorAll('#screenshot-name-span');
+        for (const filetextSpan of filetextSpans) {
             filetextSpan.textContent = "";
         }
         
@@ -47,8 +47,8 @@ document.getElementById("xsn-file-input").addEventListener("change", function (e
 
 function handleImageFile(file, i) {
     
-    const filetextSpan = document.getElementById('screenshot-name-span');
-    if (filetextSpan) {
+    const filetextSpans = document.querySelectorAll('#screenshot-name-span');
+    for (const filetextSpan of filetextSpans) {
         console.log(filetextSpan);
         filetextSpan.textContent = filetextSpan.textContent == "" ? `${i}. ${file.name}  ` : filetextSpan.textContent + `${i}. ${file.name}  `;
     }
@@ -73,8 +73,8 @@ function handleImageFile(file, i) {
 }
 
 function handleXsnFile(file) {
-    const filetextSpan = document.getElementById('xsn-file-span');
-    if (filetextSpan) {
+    const filetextSpans = document.querySelectorAll('#xsn-file-span');
+    for (const filetextSpan of filetextSpans) {
         console.log(filetextSpan);
         filetextSpan.textContent = file.name;
     }

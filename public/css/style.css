@@ -39,7 +39,7 @@ body {
     color: white;
 }
 
-.issue-divider {
+.divider {
     background-color: #1e8cae;
     color: white;
     width: 100%;
@@ -104,30 +104,37 @@ body {
     align-items: center; 
 }
 
-/* .QASection, .SearchedSolution {
+/* .QASection, .searched-solution {
     margin-top: 50px;
     align-items: center;
 } */
 
-.SearchedSolution {
+.solution-section .generated-solution-section {
     display: none;
-    margin-top: 50px;
-    align-items: center;
 }
 
-#submit-issue {
+.searched-solution .generated-solution {
+    align-items: center;
+    width: 98%;
+    position: relative;
+    padding: 1%;
+}
+
+.submit-button{
     font-size: 13pt;
     border-top: #808080 6pt;
     border-right: #808080 6pt;
     border-bottom: #808080 6pt;
     border-left: #808080 6pt;
-    width: 150px;
+    width: 175px;
     height: 35px;    
     color: #ffffff;
     margin: 5px 20px;
     background-color: #16688a;
     border-radius: 8px;
     font-family: Cambria;
+    font-weight: bolder;
+    cursor: pointer;
 }
 
 
@@ -151,7 +158,7 @@ body {
 .qa_pair {
     display: flex;
     flex-direction: column;
-    margin: 0 20px;
+    margin: 0 10px;
     width: 90%;
 }
 
@@ -159,18 +166,28 @@ body {
 .qa_answer {
     display: block;
     margin: 1px;
+    align-self: flex-start;
+}
+
+.qa_answer b {
+    padding-right: 5px;
+}
+
+.similar-issues {
+    margin: 10px;
 }
 
 #message-input {
-    width: 600px;
-    margin: 0 auto;
-    padding: 10px;
+    width: 85%;
+    margin: 0 10px;
+    padding: 10px 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
 #chatbox {
-    width: 700px;
+    width: 35%;
+    height: 82%;
     position: fixed;
     margin: 0 auto;
     padding: 20px;
@@ -180,7 +197,8 @@ body {
     bottom: 10%;
     right: 2.5%;
     background-color: white;
-    z-index: 9999
+    z-index: 9999;
+    top: 3%;
 }
 
 #chatbot-assistant {
@@ -193,7 +211,7 @@ body {
 }
 
 #chatlog {
-    height: 660px;
+    height: 90%;
     overflow-y: scroll;
     overflow-x: hidden;
     border: 1px solid #ccc;
@@ -218,10 +236,10 @@ body {
     align-items: center;
 }
 
-#user-icon {
-    margin-right: 12px;
+/* #user-icon {
+    margin-right: 5px;
     text-align: right;
-}
+} */
 
 .sender-icon {
     width: 50px;
@@ -263,7 +281,7 @@ body {
     background-color: white;
 }
 
-#image-upload-div {
+.image-upload-div {
     width: 100%;
     height: 75px;
     border: 2px dashed #ccc;
@@ -273,7 +291,7 @@ body {
     align-items: center;
 }
 
-#file-upload-div {
+.file-upload-div {
     width: 100%;
     height: 50px;
     border: 2px dashed #ccc;
