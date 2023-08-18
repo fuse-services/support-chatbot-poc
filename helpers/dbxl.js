@@ -7,9 +7,9 @@ const dbxlUrl = 'https://www.formsboard.com/QdabraWebService/DbxlDocumentWithUse
  
 const requestDBXL = async (xml) => {
     try {
-        xml = xml.replaceAll('<', '&lt;')
+        xml = xml.replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
             .replaceAll('>', '&gt;')
-            .replaceAll('&', '&amp;')
             .replaceAll('"', '&quot;')
             .replaceAll("'", '&apos;');
 

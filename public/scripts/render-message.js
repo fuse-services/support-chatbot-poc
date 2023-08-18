@@ -140,12 +140,19 @@ function renderAttachXsnFileDiv() {
 }
 
 function renderDebugContextDiv(url, body, response) {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleString(); // Adjust the format as needed
+    console.log(formattedDate);
+
+    debugContext.push({url, payload: body, result: response, datetime: formattedDate});
+
     const debugSection = document.querySelector('.debug-section');
     const debugDiv = document.createElement("div");
     debugDiv.classList.add("debug-div");
 
     const urlDiv = document.createElement("div");
     urlDiv.classList.add("debug-url-div");
+    urlDiv.id = `debug-url-div-${expandImgCounter}`;
     const urlSpan = document.createElement("span");
     urlSpan.classList.add("debug-text");
     urlSpan.innerText = url;
@@ -153,6 +160,7 @@ function renderDebugContextDiv(url, body, response) {
 
     const bodyDiv = document.createElement("div");
     bodyDiv.classList.add("debug-body-div");
+    bodyDiv.id = `debug-body-div-${expandImgCounter}`;
     const bodySpan = document.createElement("span");
     bodySpan.classList.add("debug-text");
     bodySpan.innerText = JSON.stringify(body) ;
@@ -160,23 +168,75 @@ function renderDebugContextDiv(url, body, response) {
 
     const responseDiv = document.createElement("div");
     responseDiv.classList.add("debug-response-div");
+    responseDiv.id = `debug-response-div-${expandImgCounter}`;
     const responseSpan = document.createElement("span");
     responseSpan.classList.add("debug-text");
     responseSpan.innerText = JSON.stringify(response);
     responseDiv.appendChild(responseSpan);
 
+    const dateTimeDiv = document.createElement("div");
+    dateTimeDiv.classList.add("debug-date-div");
+    dateTimeDiv.id = `debug-date-div-${expandImgCounter}`;
+    const dateTimeSpan = document.createElement("span");
+    dateTimeSpan.classList.add("debug-text");
+    dateTimeSpan.innerText = formattedDate;
+    dateTimeDiv.appendChild(dateTimeSpan);
+
     const expandDiv = document.createElement("div");
     expandDiv.classList.add("debug-expand-div");
+    expandDiv.id = `debug-expand-div-${expandImgCounter}`;
+    const img = document.createElement("img");
+    img.id = `expand-collapse-img-${expandImgCounter}`;
+    img.classList.add("expand-collapse-img");
+    img.src = "./static/collapse-icon.png";
+    expandDiv.appendChild(img);
 
+    debugDiv.appendChild(dateTimeDiv);
     debugDiv.appendChild(urlDiv);
     debugDiv.appendChild(bodyDiv);
     debugDiv.appendChild(responseDiv);
     debugDiv.appendChild(expandDiv);
-    debugSection.insertAdjacentElement('afterend',debugDiv);
+    debugSection.insertBefore(debugDiv, debugSection.firstChild);
     // debugSection.appendChild(debugDiv);
 
     // debugSection.scrollTop = debugSection.scrollHeight;
+    const expandCollapseImg = document.getElementById(`expand-collapse-img-${expandImgCounter}`);
+    expandCollapseImg.addEventListener('click', toggleExpandCollapseIcon);
 
+    function toggleExpandCollapseIcon(e) {
+        srcElement = e.srcElement.id.split("-");
+        i = srcElement[srcElement.length-1];
+
+        const debugUrlDiv = document.getElementById(`debug-url-div-${i}`);
+        const debugBodyDiv = document.getElementById(`debug-body-div-${i}`);
+        const debugResponseDiv = document.getElementById(`debug-response-div-${i}`);
+        const debugDateDiv = document.getElementById(`debug-date-div-${i}`);
+        const debugExpandDiv = document.getElementById(`debug-expand-div-${i}`);
+        debugExpandDiv.focus();
+
+        console.log("inside toggle from img");
+        console.log(e.srcElement.src);
+        if (e.srcElement.src.includes("expand")) {
+            e.srcElement.src = "./static/collapse-icon.png";
+
+            debugUrlDiv.style.height = "20px";
+            debugBodyDiv.style.height = "20px";
+            debugResponseDiv.style.height = "20px";
+            debugDateDiv.style.height = "20px";
+            debugExpandDiv.style.height = "20px";
+            // "height:20px;overflow-y:hidden;overflow-x:hidden;";
+        } else {
+            e.srcElement.src = "./static/expand-icon.png";
+            debugUrlDiv.style.height = "auto";
+            debugBodyDiv.style.height = "auto";
+            debugResponseDiv.style.height = "auto";
+            debugDateDiv.style.height = "auto";
+            debugExpandDiv.style.height = "auto";
+            // "height:auto;overflow-y:visible;overflow-x:hidden;";
+        }
+    }
+
+    expandImgCounter++;
 }
 
 function renderSearchedSolution(response) {

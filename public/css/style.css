@@ -117,15 +117,15 @@ body {
 
 .debug-container {
     position: relative;
-    width: 100%;
-    height: 100vh;
-    display: inline;
+    width: 90%;
+    height: auto;
+    display: none;
     /* flex-direction: column; */
-    overflow: hidden;
+    /* overflow-y: scroll; */
     margin-top: 20px;
 }
 
-.debug-section {
+.debug-section .debug-header-section {
     /* z-index: 9999;
     top: 60%;
     width: 100%;
@@ -139,7 +139,7 @@ body {
     /* transition: transform 0.3s;  */
     /* transform: translateY(100%); */
     border-top: 1px solid black;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 
 .debug-div, .debug-header-div {
@@ -149,8 +149,8 @@ body {
     display: flex;
 }
 
-.debug-url-div, .debug-body-div, .debug-response-div, .debug-expand-div {
-    width: 32%;
+.debug-url-div, .debug-body-div, .debug-response-div, .debug-date-div, .debug-expand-div {
+    width: 36%;
     height: 20px;
     overflow-y: hidden;
     overflow-x: hidden;
@@ -161,13 +161,27 @@ body {
     font-size: 15px;
 }
 
+.debug-url-div, .debug-date-div {
+    width: 12% !important;
+}
+
 .debug-expand-div {
     width: 3% !important;
+}
+
+.debug-text {
+    height: inherit;
 }
 
 .header-span {
     font-weight: bold;
     color: rgb(170, 3, 3)
+}
+
+.expand-collapse-img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 }
 
 /* .QASection, .searched-solution {
@@ -275,6 +289,7 @@ body {
     bottom: 10%;
     right: 7%;
     flex-direction: column;
+    z-index: 9999;
 }
 
 #chatlog {
@@ -295,6 +310,7 @@ body {
     margin-left: 93%;
     text-align: left;
     cursor: pointer;
+    z-index: 9999;
 }
 
 #chatlog div {

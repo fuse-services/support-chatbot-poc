@@ -81,31 +81,31 @@ let questions = [{
     }, {
         "question_id": 1,
         "question": "description",
-        "prompt": "You are a Qdabra Support Assistant. Your task is to ask for steps and detail that customer has taken that encountered the issue/problem in less than 40 words."
+        "prompt": "As a Qdabra Support Assistant, your task is to ask for steps and detail that customer has taken that encountered the issue/problem in less than 40 words."
     }, {
         "question_id": 2,
         "question": "actual_result",
-        "prompt": "You are a Qdabra Support Assistant. Your task is to ask for the actual result got by the customer in less than 40 words."
+        "prompt": "As a Qdabra Support Assistant, your task is to ask for the actual result got by the customer in less than 40 words."
     }, {
         "question_id": 3,
         "question": "expected_result",
-        "prompt": "You are a Qdabra Support Assistant. Your task is to ask for the expected result by the customer in less than 40 words."
+        "prompt": "As a Qdabra Support Assistant, your task is to ask for the expected result by the customer in less than 40 words."
     }, {
         "question_id": 4,
         "question": "attach_screenshot",
-        "prompt": "You are a Qdabra Support Assistant. Your task is to ask if the customer would like to attach screenshot, image in less than 30 words."
+        "prompt": "As a Qdabra Support Assistant, your task is to ask if the customer would like to attach screenshot, image in less than 30 words."
     }, {
         "question_id": 5,
         "question": "attach_xsnfile",
-        "prompt": "You are a Qdabra Support Assistant. Your task is to ask if the customer would like to the infopath xsn file in less than 30 words."
+        "prompt": "As a Qdabra Support Assistant, your task is to ask if the customer would like to the infopath xsn file in less than 30 words."
     }, {
         "question_id": 6,
         "question": "confirm_answer",
-        "prompt": `You are a Qdabra Support Assistant. Your task is to ask the user to verify if the user wants to rectify the above answers. If they want to rectify then ask the user to type "'Yes' to modify the answer" otherwise "'No' to skip" to continue as response in less than 30 word.`
+        "prompt": `As a Qdabra Support Assistant, your task is to ask the user to verify if the user wants to rectify the above answers. If they want to rectify then ask the user to type "'Yes' to modify the answer" otherwise "'No' to skip" to continue as response in less than 30 word.`
     }, {
         "question_id": 7,
         "question": "answer_option",
-        "prompt": `You are a Qdabra Support Assistant. Your task is to ask for which answer the user would like to modify the answer and show the option below as it is and ask the user to provide the response in same format in less than 40 words.
+        "prompt": `As a Qdabra Support Assistant, your task is to ask for which answer the user would like to modify the answer and show the option below as it is and ask the user to provide the response in same format in less than 40 words.
                 Option:
                 '<br/> 
                 1 => "What is the issue/problem?" <br/>
@@ -118,16 +118,17 @@ let questions = [{
     }, {
         "question_id": 8,
         "question": "rectify_answer",
-        "prompt": "You are a Qdabra Support Assistant. Your task is to ask if the customer would like to attach screenshot, image in less than 30 words."
+        "prompt": "As a Qdabra Support Assistant, your task is to ask if the customer would like to attach screenshot, image in less than 30 words."
     }, {
         "question_id": 9,
         "question": "submit_support",
-        "prompt": `You are a Qdabra Support Assistant. You have asked for user's issue, repro steps, actual result and expected result, and also have attached screenshots and xsn file.
+        "prompt": `As a Qdabra Support Assistant, you have asked for user's issue, repro steps, actual result and expected result, and also have attached screenshots and xsn file.
             Your task is to ask if the customer to type "yes" to submit the support otherwise they can click the "Search Solution" button to submit the form as well in less than 40 words.`
     },
 ];
 
 let questionCounter = 0;
+let expandImgCounter = 0;
 
 let userContentToken = [];
 
@@ -286,7 +287,7 @@ async function setTextboxValue(message, answerPointer) {
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-  }
+}
 
 function highLightTextbox(event) {
     const answerTxtbox = document.getElementById(`answer-txt${questionCounter}`);

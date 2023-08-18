@@ -112,21 +112,24 @@
         </div>
     </div>
 
-    <div class="debug-container">
-       <div class="debug-section">
+    <div class="debug-container" style="display: none;">
+       <div class="debug-header-section">
             Debug Area
             <div class="debug-div">
+                <div class="debug-date-div"><span class="header-span">Date</span></div>
                 <div class="debug-url-div"><span class="header-span">URL</span></div>
                 <div class="debug-body-div"><span class="header-span">Body</span></div>
                 <div class="debug-response-div"><span class="header-span">Response</span></div>
                 <div class="debug-expand-div"></div>
             </div>
         </div>
+        <div class="debug-section"></div>
     </div>
 
     <div class="loader-overlay" id="loader-div" style="display: none;">
         <div class="loader"></div>
     </div>
+    <div style="display:none !important" class ="expand-collapse-img"></div>
     
     <script language="javascript" src="./scripts/request-api.js" > </script>
     <script language="javascript" src="./scripts/render-message.js" > </script>
@@ -169,13 +172,13 @@
 
         document.querySelector('.debug-button').addEventListener('click', toggleDebugSection);
         function toggleDebugSection() {
-            const debugSection = document.querySelector(".debug-section");
+            const debugContainer = document.querySelector(".debug-container");
             // const tab = document.querySelector(".tab");
 
-            if (debugSection.style.display=== "none") {
-                debugSection.style.display = "block";
+            if (debugContainer.style.display == "none") {
+                debugContainer.style.display = "inline";
             } else {
-                debugSection.style.display = "none";
+                debugContainer.style.display = "none";
             }
         }
     </script>

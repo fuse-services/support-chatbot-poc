@@ -108,13 +108,13 @@ function submitIssueForm(e) {
                 console.log(data);
                 renderSolutionMessage(data.response, data.solutions);
                 // renderSearchedSolution(data);
-                renderDebugContextDiv("/submit-issue", body, data);
+                // renderDebugContextDiv("/submit-issue", body, data);
                 showLoader(false);
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('Error occured while submitting the issue. Please try again later.');
-                renderDebugContextDiv("/submit-issue", body, error);
+                // renderDebugContextDiv("/submit-issue", body, error);
                 showLoader(false);
             });
     } catch (ex) {
@@ -137,6 +137,7 @@ function loadFormData() {
         formData.append('actualResult', validateElementValue('answer-txt2'));
         formData.append('expectedResult', validateElementValue('answer-txt3'));
         formData.append('threshold', "0.9");
+        formData.append('debugContext', JSON.stringify(debugContext));
 
         const files = document.getElementById('screenshot-input').files;
         for (const file of files) {
