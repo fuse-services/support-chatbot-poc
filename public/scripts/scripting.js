@@ -3,6 +3,8 @@ let modifiedAnswer = 0;
 let isRectified = false;
 let attachmentRectifiedCounter = 0;
 
+const debugContext= [];
+
 const processFlow = `1. The issues/problems/features are gathered from user.
     2. The questions are used to gather information from user such as steps, actual result, expected result and so on.
     3. This information are send to chatgpt and also stored in our database.

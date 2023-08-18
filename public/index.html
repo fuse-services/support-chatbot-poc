@@ -68,6 +68,10 @@
                     <div class="submit-container">
                         <button id="submit-issue" class="submit-button" type="submit">Search Solution</button>
                     </div>
+                    <div class="debug-button">
+                        <!-- <input type="button" class="debug-button" value="Debug">  -->
+                        <span>...</span>
+                    </div>
                 </form>
             </div>
         
@@ -90,19 +94,32 @@
             </div>
         </div> -->
         
-        <div id="chatbot-assistant">
-            <div id="chatbox">
-                <div id="chatlog"></div>
-                <form id="message-form">
-                    <div style="display: flex; align-items: center; padding: 10px 0;">
-                        <div id="user-icon"><strong>User:</strong></div>
-                        <input type="text" id="message-input" placeholder="Type your message..." required />
-                        <button type="submit" style="align-items:center;padding:10px;border-radius:5px;border:1px solid #ccc;">Send</button>
-                    </div>
-                </form>
+            <div id="chatbot-assistant">
+                <div id="chatbox">
+                    <div id="chatlog"></div>
+                    <form id="message-form">
+                        <div style="display: flex; align-items: center; padding: 10px 0;">
+                            <div id="user-icon"><strong>User:</strong></div>
+                            <input type="text" id="message-input" placeholder="Type your message..." required />
+                            <button type="submit" style="align-items:center;padding:10px;border-radius:5px;border:1px solid #ccc;">Send</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="chatbot-icon">
+                    <img src="./static/chatbot-icon.png" style="height:75px;width:75px"></img>
+                </div>
             </div>
-            <div id="chatbot-icon">
-                <img src="./static/chatbot-icon.png" style="height:75px;width:75px"></img>
+        </div>
+    </div>
+
+    <div class="debug-container">
+       <div class="debug-section">
+            Debug Area
+            <div class="debug-div">
+                <div class="debug-url-div"><span class="header-span">URL</span></div>
+                <div class="debug-body-div"><span class="header-span">Body</span></div>
+                <div class="debug-response-div"><span class="header-span">Response</span></div>
+                <div class="debug-expand-div"></div>
             </div>
         </div>
     </div>
@@ -119,6 +136,7 @@
 
         const chatbot = document.getElementById("chatbot-icon");
         const chatbotDiv = document.getElementById("chatbox");
+        
         chatbot.addEventListener('click', toggleChatbot);
         chatbotDiv.style.display == "block" ? document.body.style.alignItems = "": document.body.style.alignItems = "center";
 
@@ -132,11 +150,11 @@
             if (chatbotDiv.style.display == "block") {
                 chatbotDiv.style.display = "none";
                 document.body.style.alignItems = "center";
-                supportTicketContainer.style.margin = "2%";
+                supportTicketContainer.style.margin = "1%";
             } else {
                 chatbotDiv.style.display = "block";
                 document.body.style.alignItems ="";
-                supportTicketContainer.style.margin = "2% 5%";
+                supportTicketContainer.style.margin = "1% 5%";
 
             }
         }
@@ -149,6 +167,17 @@
             loader.style.display = show == true ? "block" : "none";
         }
 
+        document.querySelector('.debug-button').addEventListener('click', toggleDebugSection);
+        function toggleDebugSection() {
+            const debugSection = document.querySelector(".debug-section");
+            // const tab = document.querySelector(".tab");
+
+            if (debugSection.style.display=== "none") {
+                debugSection.style.display = "block";
+            } else {
+                debugSection.style.display = "none";
+            }
+        }
     </script>
 </body>
 

@@ -89,7 +89,7 @@ function renderAttachScreenShotFileDiv() {
     screenshotInput.addEventListener('change', (event) => {
         const selectedFiles = event.target.files;
 
-        document.getElementById("question-div4").style.color ="black";
+        // document.getElementById("question-div4").style.color ="black";
 
         if (Array.from(selectedFiles).length > 0 && (questionCounter < questions.length && questions[questionCounter].question == "attach_screenshot")) {
             let contentToken = getQuestionContext("");
@@ -127,7 +127,7 @@ function renderAttachXsnFileDiv() {
     screenshotInput.addEventListener('change', (event) => {
         const selectedFile = event.target.files[0];
 
-        document.getElementById("question-div5").style.color ="1px solid black";
+        // document.getElementById("question-div5").style.color ="1px solid black";
 
         if (selectedFile && (questionCounter < questions.length && questions[questionCounter].question == "attach_xsnfile")) {
             let contentToken = getQuestionContext("");
@@ -137,6 +137,46 @@ function renderAttachXsnFileDiv() {
         }
         
     });
+}
+
+function renderDebugContextDiv(url, body, response) {
+    const debugSection = document.querySelector('.debug-section');
+    const debugDiv = document.createElement("div");
+    debugDiv.classList.add("debug-div");
+
+    const urlDiv = document.createElement("div");
+    urlDiv.classList.add("debug-url-div");
+    const urlSpan = document.createElement("span");
+    urlSpan.classList.add("debug-text");
+    urlSpan.innerText = url;
+    urlDiv.appendChild(urlSpan);
+
+    const bodyDiv = document.createElement("div");
+    bodyDiv.classList.add("debug-body-div");
+    const bodySpan = document.createElement("span");
+    bodySpan.classList.add("debug-text");
+    bodySpan.innerText = JSON.stringify(body) ;
+    bodyDiv.appendChild(bodySpan);
+
+    const responseDiv = document.createElement("div");
+    responseDiv.classList.add("debug-response-div");
+    const responseSpan = document.createElement("span");
+    responseSpan.classList.add("debug-text");
+    responseSpan.innerText = JSON.stringify(response);
+    responseDiv.appendChild(responseSpan);
+
+    const expandDiv = document.createElement("div");
+    expandDiv.classList.add("debug-expand-div");
+
+    debugDiv.appendChild(urlDiv);
+    debugDiv.appendChild(bodyDiv);
+    debugDiv.appendChild(responseDiv);
+    debugDiv.appendChild(expandDiv);
+    debugSection.insertAdjacentElement('afterend',debugDiv);
+    // debugSection.appendChild(debugDiv);
+
+    // debugSection.scrollTop = debugSection.scrollHeight;
+
 }
 
 function renderSearchedSolution(response) {

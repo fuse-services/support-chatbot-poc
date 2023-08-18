@@ -3,14 +3,16 @@ const { readFileSync, writeFileSync } = require('fs');
 const { searchPineconeEmbeddings } = require('../services/pinecone-embeddings.service');
 const xmlbuilder = require('xmlbuilder');
 const { sendMail } = require('../services/mail.service');
-const { supportEmailTemplate } = require('../email-template/support-template');
+const { supportEmailTemplate } = require('../template/support-template');
 const { selectUniqueItems } = require('../helpers/helper');
 const { getTextfromImage } = require('../services/google-api.service');
+const { requestDBXL } = require('../helpers/dbxl');
 
 const makeOpenAiApiCall = async (chatCompletionOption) => {
     console.log(process.env.OPEN_AI_API_KEY);
     const configuration = new Configuration({
-        apiKey: process.env.OPEN_AI_API_KEY
+        apiKey: process.env.OPEN_AI_API_KEY,
+        organization_id: process.env.OPEN_AI_oRG_KEY,
     });
     const openai = new OpenAIApi(configuration);
 
@@ -67,6 +69,8 @@ const searchSupportResolution = async (req, res) => {
         const suportTicket = {id: 123};
 
         const xml = await generateXmlFile(req.body, req.files);
+
+        const dbxlResponse = await requestDBXL(xml);
 
         const emailBody = supportEmailTemplate.replace("__Company_Name__", req.body.companyName)
                           .replace("__Name__", req.body.name)
@@ -162,7 +166,12 @@ const generateXmlFile = async (issueInfo, files) => {
             const file = files.imageFiles[i];
             let base64 = "";
             if (file) {
-                base64 = readFileSync(file.path, { encoding: 'base64' });
+                const fileData = readFileSync(file.path);
+                base64 = fileData.toString('base64');
+
+                // writeFileData = Buffer.from(base64, 'base64');
+                // const testFilePath='./test.png';
+                // writeFileSync(testFilePath, writeFileData);
             }
             let xmlScreenshot = xmlScreenshots.ele('my:screenshot');
             let xmlImage = xmlScreenshot.ele('my:image', base64);

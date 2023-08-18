@@ -6,8 +6,8 @@ messageForm.addEventListener('submit', sendMessage);
 const submitIssue = document.getElementById('issue-detail');
 submitIssue.addEventListener('submit', submitIssueForm);
 
-const btnGenerateSolution = document.getElementById('btn-generate-solution');
-btnGenerateSolution.addEventListener('click', generateSolution);
+// const btnGenerateSolution = document.getElementById('btn-generate-solution');
+// btnGenerateSolution.addEventListener('click', generateSolution);
 
 function makeOpenAICall(contentToken) {
     // Show typing indicator
@@ -24,6 +24,7 @@ function makeOpenAICall(contentToken) {
         body: JSON.stringify({ contentToken: contentToken, model: 'gpt-4' })
     }).then(response => response.json())
     .then(data => {
+        renderDebugContextDiv("/openai/chatbot", contentToken[contentToken.length-1], data);
         if (userContentToken.length > 20) {
             userContentToken = userContentToken.slice(3);
         }
@@ -40,14 +41,13 @@ function makeOpenAICall(contentToken) {
         }
     }).catch(error => {
         console.error('Error:', error);
+        renderDebugContextDiv("/openai/chatbot", contentToken[contentToken.length-1], error);
     });
 }
 
 
-
-
- // Function to handle form submission
- function sendMessage(event) {
+// Function to handle form submission
+function sendMessage(event) {
      event.preventDefault();
      var messageInput = document.getElementById('message-input');
      var message = messageInput.value.trim();
@@ -95,7 +95,7 @@ function submitIssueForm(e) {
     e.preventDefault();
     showLoader(true);
     const body = loadFormData();
-
+    
     if (!body) {
         showLoader(false);
         return;
@@ -108,11 +108,13 @@ function submitIssueForm(e) {
                 console.log(data);
                 renderSolutionMessage(data.response, data.solutions);
                 // renderSearchedSolution(data);
+                renderDebugContextDiv("/submit-issue", body, data);
                 showLoader(false);
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('Error occured while submitting the issue. Please try again later.');
+                renderDebugContextDiv("/submit-issue", body, error);
                 showLoader(false);
             });
     } catch (ex) {
